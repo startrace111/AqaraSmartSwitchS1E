@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEBUG=1
+DEBUG=0
 VERSION="1.0.8"
 
 # linux

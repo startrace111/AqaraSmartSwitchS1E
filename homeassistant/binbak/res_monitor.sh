@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEBUG=1
+DEBUG=0
 VERSION="1.0.8"
 LATEST_VERSION_URL="https://gh-proxy.com/raw.githubusercontent.com/startrace111/AqaraSmartSwitchS1E/master/homeassistant/release.json"
 
@@ -242,7 +242,7 @@ setup_sensors() {
 
     topic="$prefix_topic/status"
     msg="online"
-    mqtt_pub $topic "$msg"
+    mqtt_pub $topic "$msg" 1 "-r"
 
 #    if [ "x$type" != "xpower" ] && [ "x$type" != "xenergy" ] && [ "x$type" != "xpower" ]; then
 #        topic=$state_topic
@@ -318,7 +318,7 @@ setup_binary_sensors() {
 
     topic="$prefix_topic/status"
     msg="online"
-    mqtt_pub $topic "$msg"
+    mqtt_pub $topic "$msg" 1 "-r"
 
     topic=$state_topic
     mqtt_pub $state_topic "unknown"
@@ -399,7 +399,7 @@ config_switchs() {
         sleep .1
         topic="$HASS_PREFIX/switch/0x00${DID}/${type}/status"
         msg="online"
-        mqtt_pub $topic "$msg"
+        mqtt_pub $topic "$msg" 1 "-r"
         sleep .1
     done
 }
@@ -453,7 +453,7 @@ setup_buttons() {
 
     topic="$prefix_topic/status"
     msg="online"
-    mqtt_pub $topic "$msg"
+    mqtt_pub $topic "$msg" 1 "-r"
 }
 
 config_buttons() {
@@ -500,7 +500,7 @@ setup_numbers() {
 
     topic="$prefix_topic/status"
     msg="online"
-    mqtt_pub $topic "$msg"
+    mqtt_pub $topic "$msg" 1 "-r"
 }
 
 config_numbers() {
@@ -561,7 +561,7 @@ setup_selects() {
 
     topic="$prefix_topic/status"
     msg="online"
-    mqtt_pub $topic "$msg"
+    mqtt_pub $topic "$msg" 1 "-r"
 
     # special case, set the attribute of theme
     if [ "x$type" == "xtheme" ]; then
@@ -604,7 +604,7 @@ setup_scenses() {
 
     topic="$prefix_topic/status"
     msg="online"
-    mqtt_pub $topic "$msg"
+    mqtt_pub $topic "$msg" 1 "-r"
 }
 
 config_scenes() {
@@ -644,7 +644,7 @@ set_status() {
         topic="$HASS_PREFIX/switch/0x00${DID}/channel_${id}/status"
         enable=$(echo $CONFIG | jshon -e switchs -e $((i - 1)) -e "enable")
         msg=`[ $enable == 1 ] && echo "online" || echo "offline"`
-        mqtt_pub $topic "$msg"
+        mqtt_pub $topic "$msg" 1 "-r"
     done
 }
 
@@ -659,7 +659,7 @@ set_wstatus() {
         topic="$HASS_PREFIX/sensor/0x00${DID}/channel_${id}/status"
         enable=$(echo $WCONFIG | jshon -e switchs -e $((i - 1)) -e "enable")
         msg=`[ $enable == 1 ] && echo "online" || echo "offline"`
-        mqtt_pub $topic "$msg"
+        mqtt_pub $topic "$msg" 1 "-r"
     done
 }
 
@@ -1031,7 +1031,7 @@ check_connectivity() {
             prefix_topic="$HASS_PREFIX/$entity"
             topic="$prefix_topic/status"
             msg="online"
-            mqtt_pub $topic "$msg"
+            mqtt_pub $topic "$msg" 1 "-r"
         done
         status=1
     elif [ "x$type" == "xcloud" ]; then
@@ -1138,6 +1138,30 @@ change_status() {
     exit
 }
 
+HEARTBEAT_LOCK="/tmp/heartbeat.lock"
+
+# 函数：启动心跳线程（只启动一次）
+start_heartbeat_thread() {
+    # 如果已有心跳线程运行，就不重复启动
+    if [ -f "$HEARTBEAT_LOCK" ] && kill -0 $(cat $HEARTBEAT_LOCK) 2>/dev/null; then
+        debug "Heartbeat thread already running with PID $(cat $HEARTBEAT_LOCK)"
+        return
+    fi
+
+    (
+        debug "Heartbeat thread started"
+        while true; do
+            sleep 60
+            check_connectivity ordinary
+            do_heartbeat
+        done
+    ) &
+
+    # 把子进程 PID 写入 lock 文件
+    echo $! > "$HEARTBEAT_LOCK"
+}
+
+
 # main
 check_mqtt
 read_mqtt_config
@@ -1167,6 +1191,9 @@ sleep 3
 while true  # Keep an infinite loop to reconnect when connection lost/broker unavailable
 do
     pkill -f ha_driven
+    sleep 1
+    # 每次循环都尝试启动心跳线程（如果已在运行则不会重复）
+    start_heartbeat_thread
     ha_driven -O 1 -L 7 -p /tmp/automatic.pid | awk '/method|sendHeartbeat/{print $7 $8}' | while read -r payload
     do
         debug "Rx ha_driven: ${payload}"

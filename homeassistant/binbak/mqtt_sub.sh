@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEBUG=1
+DEBUG=0
 VERSION="1.0.8"
 LATEST_VERSION_URL="https://gh-proxy.com/raw.githubusercontent.com/startrace111/AqaraSmartSwitchS1E/master/homeassistant/release.json"
 
