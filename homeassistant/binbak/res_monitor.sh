@@ -352,7 +352,7 @@ setup_switchs() {
             msg="{\"name\":\"$name\",\"uniq_id\":\"$unique_id\",\"icon\":\"$icon\",\"~\":\"$prefix_topic\",\"avty_t\":\"~/status\",\"stat_t\":\"~/state\",\"cmd_t\":\"~/set\",\"send_cmd_t\":\"~/setframe\",\"json_attr_t\":\"~\",\"json_attr_tpl\":\"{{value_json.digital_frame|tojson}}\"}"
         ;;
         *)
-            msg="{\"name\":\"$name\",\"uniq_id\":\"$unique_id\",\"icon\":\"$icon\",\"~\":\"$prefix_topic\",\"avty_t\":\"~/status\",\"stat_t\":\"~/state\",\"cmd_t\":\"~/set\"}"
+            msg="{\"name\":\"$name\",\"uniq_id\":\"$unique_id\",\"icon\":\"$icon\",\"~\":\"$prefix_topic\",\"stat_t\":\"~/state\",\"cmd_t\":\"~/set\"}"
         ;;
     esac
 
