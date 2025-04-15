@@ -535,12 +535,19 @@ set_theme() {
         fi
         if [ -f "${url##*/}" ]; then
             theme_install.sh -u "/tmp/${url##*/}"
-            theme_install.sh -m "/tmp/${url##*/}"
-            theme_install.sh -r "/tmp/${url##*/}"
+            theme_name=`ls /data/theme/tmp/`
+            # 获取 /data/theme 下最新修改的目录（排除 tmp）
+            newest_dir=$(ls -dt /data/theme/*/ 2>/dev/null | grep -v "/tmp/" | head -1)
+            echo "最新目录为：$newest_dir"
+            rm -rf "${newest_dir:?}"/*
+            src_dir="/data/theme/tmp/$theme_name"
+            chmod -R 777 "$src_dir"
+            cp -a "$src_dir"/. "$newest_dir"
+            rm -rf /data/theme/tmp
             asetprop sys.dfu_progress 100
         fi
 
-        [ -d "/data/theme/tmp" ] && rm -f "/data/theme/tmp"
+        [ -f "/tmp/${url##*/}" ] && rm -f "/tmp/${url##*/}"
     fi
 }
 
