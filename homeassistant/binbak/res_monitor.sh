@@ -352,7 +352,7 @@ setup_switchs() {
             msg="{\"name\":\"$name\",\"uniq_id\":\"$unique_id\",\"icon\":\"$icon\",\"~\":\"$prefix_topic\",\"avty_t\":\"~/status\",\"stat_t\":\"~/state\",\"cmd_t\":\"~/set\",\"send_cmd_t\":\"~/setframe\",\"json_attr_t\":\"~\",\"json_attr_tpl\":\"{{value_json.digital_frame|tojson}}\"}"
         ;;
         *)
-            msg="{\"name\":\"$name\",\"uniq_id\":\"$unique_id\",\"icon\":\"$icon\",\"~\":\"$prefix_topic\",\"stat_t\":\"~/state\",\"cmd_t\":\"~/set\"}"
+            msg="{\"name\":\"$name\",\"uniq_id\":\"$unique_id\",\"icon\":\"$icon\",\"~\":\"$prefix_topic\",\"avty_t\":\"~/status\",\"stat_t\":\"~/state\",\"cmd_t\":\"~/set\"}"
         ;;
     esac
 
@@ -641,7 +641,7 @@ set_status() {
     for i in `seq 1 $nswitchs`; do
         id=$(echo $CONFIG | jshon -e switchs -e $((i - 1)) -e "id")
         unique_id="0x00${DID}_channel_${id}"
-        topic="$HASS_PREFIX/switch/0x00${DID}/channel_${id}/status"
+        topic="$HASS_PREFIX/switch/0x00${DID}/channel_${i}/status"
         enable=$(echo $CONFIG | jshon -e switchs -e $((i - 1)) -e "enable")
         msg=`[ $enable == 1 ] && echo "online" || echo "offline"`
         mqtt_pub $topic "$msg" 1 "-r"
