@@ -34,10 +34,13 @@ def process_pictures(path, b, w, h):
     for file in os.listdir(path):
         if "_nor" in file or "_abnor" in file or "_background" in file:
             continue
-        if not os.path.isfile(file):
+        if not os.path.isfile(os.path.join(path, file)):
             continue
         f_img = "{}/{}".format(path, file)
-        img = Image.open(f_img)
+        try:
+            img = Image.open(f_img)
+        except Exception as e:
+            continue
         img = img.resize((width, height))
         if b:
             f_img_nor = "{}/s1e/{}_background{}".format(

@@ -208,10 +208,14 @@ set_display() {
                 new=$(echo $current | sed -r "s/\{\"fontSize\":\"(.*)\",\"language/\{\"fontSize\":\"$value\",\"language/g")
             ;;
             home_page)
-                new=$(echo $current | sed -r "s/\{\"homePage\":\"(.*)\",\"showHomeTitle/\{\"homePage\":\"$value\",\"showHomeTitle/g")
+                #new=$(echo $current | sed -r "s/\{\"homePage\":\"(.*)\",\"showHomeTitle/\{\"homePage\":\"$value\",\"showHomeTitle/g")
+                new=$(echo "$current" | sed -r "s/\"homePage\":\"[^\"]+\",\"showHomeTitle\"/\"homePage\":\"$value\",\"showHomeTitle\"/")
+
             ;;
             standby_screen)
-                new=$(echo $current | sed -r "s/\{\"screenStyle\":\"(.*)\",\"clock/\{\"screenStyle\":\"$value\",\"clock/g")
+                #new=$(echo $current | sed -r "s/\{\"screenStyle\":\"(.*)\",\"clock/\{\"screenStyle\":\"$value\",\"clock/g")
+                new=$(echo $current | sed -r "s/\"screenStyle\":\"[^\"]+\"/\"screenStyle\":\"$value\"/g")
+
             ;;
             language)
                 case $value in
@@ -509,7 +513,7 @@ set_select() {
     if [ "x$ret" != "x" ]; then
         target=$(echo $topic | cut -d "/" -f 4)
         case $target in
-            font_size | home_page | language)
+            font_size | home_page | language | set_display)
                 set_display $target $msg
             ;;
             volume_level)

@@ -184,39 +184,39 @@ user_display() {
         data=$(echo $payload | jshon -Q -e data)
         if [ -n "$data" ]; then
             # screen standby
-            enable=$(echo $data | jshon -Q -e standby -e enable)
+            enable=$(echo $data | jshon -Q -e standby -e enable | tr -d '"')
             topic="$HASS_PREFIX/switch/0x00${DID}/standby/state"
             [ "x$enable" == "x1" ] && msg="ON" || msg="OFF"
             mqtt_pub "$topic" "$msg"
 
             # screen saver
-            enable=$(echo $data | jshon -Q -e standby -e screen)
+            enable=$(echo $data | jshon -Q -e standby -e screen | tr -d '"')
             topic="$HASS_PREFIX/switch/0x00${DID}/screen_saver/state"
             [ "x$enable" == "x1" ] && msg="ON" || msg="OFF"
             mqtt_pub "$topic" "$msg"
 
             # brightness
-            msg=$(echo $data | jshon -Q -e brightness)
+            msg=$(echo $data | jshon -Q -e brightness | tr -d '"')
             topic="$HASS_PREFIX/number/0x00${DID}/brightness/state"
             mqtt_pub "$topic" "$msg"
 
             # standby time
-            msg=$(echo $data | jshon -Q -e standby -e seconds)
+            msg=$(echo $data | jshon -Q -e standby -e seconds | tr -d '"')
             topic="$HASS_PREFIX/number/0x00${DID}/standby_time/state"
             mqtt_pub "$topic" "$msg"
 
             # standby brightness
-            msg=$(echo $data | jshon -Q -e standby -e brightness)
+            msg=$(echo $data | jshon -Q -e standby -e brightness | tr -d '"')
             topic="$HASS_PREFIX/number/0x00${DID}/standby_brightness/state"
             mqtt_pub "$topic" "$msg"
 
             # home page
-            msg=$(echo $data | jshon -Q -e homePage)
+            msg=$(echo $data | jshon -Q -e homePage | tr -d '"')
             topic="$HASS_PREFIX/select/0x00${DID}/home_page/state"
             mqtt_pub "$topic" "$msg"
 
             # standby screen
-            value=$(echo $data | jshon -Q -e screenStyle)
+            value=$(echo $data | jshon -Q -e standby -e screenStyle | tr -d '"')
             topic="$HASS_PREFIX/select/0x00${DID}/standby_screen/state"
             mqtt_pub "$topic" "$value"
         fi
@@ -234,30 +234,30 @@ user_audio() {
         data=$(echo $payload | jshon -Q -e data)
         if [ -n "$data" ]; then
             # mute
-            value=$(echo $data | jshon -Q -e mute)
+            value=$(echo $data | jshon -Q -e mute | tr -d '"')
             topic="$HASS_PREFIX/switch/0x00${DID}/mute/state"
             [ "x$value" == "x1" ] && msg="ON" || msg="OFF"
             mqtt_pub "$topic" "$msg"
 
             # touch sound
-            value=$(echo $data | jshon -Q -e touchSound)
+            value=$(echo $data | jshon -Q -e touchSound | tr -d '"')
             topic="$HASS_PREFIX/switch/0x00${DID}/touch_sound/state"
             [ "x$value" == "x1" ] && msg="ON" || msg="OFF"
             mqtt_pub "$topic" "$msg"
 
             # slient mode
-            value=$(echo $data | jshon -Q -e silentMode)
+            value=$(echo $data | jshon -Q -e silentMode | tr -d '"')
             topic="$HASS_PREFIX/switch/0x00${DID}/slient_mode/state"
             [ "x$value" == "x1" ] && msg="ON" || msg="OFF"
             mqtt_pub "$topic" "$msg"
 
             # font size
-            value=$(echo $data | jshon -Q -e fontSize)
+            value=$(echo $data | jshon -Q -e fontSize | tr -d '"')
             topic="$HASS_PREFIX/select/0x00${DID}/font_size/state"
             mqtt_pub "$topic" "$value"
 
             # volume level
-            value=$(echo $data | jshon -Q -e volumeLevel)
+            value=$(echo $data | jshon -Q -e volumeLevel | tr -d '"')
             topic="$HASS_PREFIX/select/0x00${DID}/volume_level/state"
             mqtt_pub "$topic" "$value"
         fi
