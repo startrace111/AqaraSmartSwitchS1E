@@ -214,7 +214,8 @@ set_display() {
             ;;
             standby_screen)
                 #new=$(echo $current | sed -r "s/\{\"screenStyle\":\"(.*)\",\"clock/\{\"screenStyle\":\"$value\",\"clock/g")
-                new=$(echo $current | sed -r "s/\"screenStyle\":\"[^\"]+\"/\"screenStyle\":\"$value\"/g")
+                #new=$(echo $current | sed -r "s/\"screenStyle\":\"[^\"]+\"/\"screenStyle\":\"$value\"/g")
+                new=$(echo "$current" | sed -r "s/\"screenStyle\":\"[^\"]+\",\"brightness\"/\"screenStyle\":\"$value\",\"brightness\"/")
 
             ;;
             language)
@@ -513,7 +514,7 @@ set_select() {
     if [ "x$ret" != "x" ]; then
         target=$(echo $topic | cut -d "/" -f 4)
         case $target in
-            font_size | home_page | language | set_display)
+            font_size | home_page | language | standby_screen)
                 set_display $target $msg
             ;;
             volume_level)

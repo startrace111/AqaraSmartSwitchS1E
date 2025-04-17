@@ -183,6 +183,11 @@ user_display() {
     if [ -n "$user" ]; then
         data=$(echo $payload | jshon -Q -e data)
         if [ -n "$data" ]; then
+            # font size
+            value=$(echo $data | jshon -Q -e fontSize | tr -d '"')
+            topic="$HASS_PREFIX/select/0x00${DID}/font_size/state"
+            mqtt_pub "$topic" "$value"
+
             # screen standby
             enable=$(echo $data | jshon -Q -e standby -e enable | tr -d '"')
             topic="$HASS_PREFIX/switch/0x00${DID}/standby/state"
@@ -251,10 +256,10 @@ user_audio() {
             [ "x$value" == "x1" ] && msg="ON" || msg="OFF"
             mqtt_pub "$topic" "$msg"
 
-            # font size
-            value=$(echo $data | jshon -Q -e fontSize | tr -d '"')
-            topic="$HASS_PREFIX/select/0x00${DID}/font_size/state"
-            mqtt_pub "$topic" "$value"
+#            # font size
+#            value=$(echo $data | jshon -Q -e fontSize | tr -d '"')
+#            topic="$HASS_PREFIX/select/0x00${DID}/font_size/state"
+#            mqtt_pub "$topic" "$value"
 
             # volume level
             value=$(echo $data | jshon -Q -e volumeLevel | tr -d '"')
