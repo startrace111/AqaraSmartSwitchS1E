@@ -89,6 +89,8 @@ check_installed() {
             killall -9 res_monitor.sh > /dev/null 2>&1
             killall -9 mqtt_sub.sh > /dev/null 2>&1
             killall -9 ubus_monitor.sh > /dev/null 2>&1
+            killall -9 frame.sh > /dev/null 2>&1
+            killall -9 mosquitto_sub > /dev/null 2>&1
             rm -f $USER_BIN/res_monitor.sh $USER_BIN/mqtt_sub.sh $USER_BIN/ubus_monitor.sh $USER_BIN/run_$NAME.sh
             rm -f $MQTT_CONF $USER_BIN/mosquitto_pub $USER_BIN/mosquitto_sub $USER_BIN/curl $USER_BIN/frame.sh
             chattr -i "/data/scripts/post_init.sh"
@@ -113,6 +115,8 @@ check_installed() {
     killall -9 res_monitor.sh > /dev/null 2>&1
     killall -9 mqtt_sub.sh > /dev/null 2>&1
     killall -9 ubus_monitor.sh > /dev/null 2>&1
+    killall -9 frame.sh > /dev/null 2>&1
+    killall -9 mosquitto_sub > /dev/null 2>&1
     rm -f $USER_BIN/res_monitor.sh $USER_BIN/mqtt_sub.sh $USER_BIN/ubus_monitor.sh $USER_BIN/run_$NAME.sh
 }
 
