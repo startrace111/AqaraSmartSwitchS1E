@@ -344,7 +344,7 @@ do
                     theme)
                         user_theme "$payload"
                     ;;
-                    set.display)
+                    display)
                         user_display "$payload"
                     ;;
                     set.audio)

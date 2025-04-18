@@ -86,6 +86,18 @@ def main():  # noqa MC0001
     if args.directory:
         process_pictures(
             args.directory, args.background, args.width, args.height)
+    # add index
+    ret_path = os.path.join(args.directory, 's1e')
+    img_fns = []
+    for file in os.listdir(ret_path):
+        if file.endswith('.png'):
+            img_fns.append(file)
+    with open(os.path.join(ret_path, 'img.txt'), 'w') as fw:
+        for img in img_fns:
+            if img == img_fns[-1]:
+                fw.write(img)
+            else:
+                fw.write('{}\n'.format(img))
     print("Convert to png and resize done!")
 
 if __name__ == '__main__':
