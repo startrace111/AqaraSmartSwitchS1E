@@ -60,10 +60,10 @@ read_config() {
         DPF_PHOTOS_URL=$(echo $config | jshon -Q -e digital_frame -e url | tr -d '"')
         DPF_INTERVAL=$(echo $config | jshon -Q -e digital_frame -e interval)
         SHUFFLE=$(echo $config | jshon -Q -e digital_frame -e shuffle)
-        REFRESH=$(echo "$config" | jshon -Q -e digital_frame -e refresh)
+        REFRESH=$(echo $config | jshon -Q -e digital_frame -e refresh)
         [ -z $DPF_INTERVAL ] && DPF_INTERVAL=$DPF_DEFAULT_INTERVAL
         [ -z $SHUFFLE ] && SHUFFLE=0
-        [ -z "$REFRESH" ] && REFRESH=0
+        [ -z $REFRESH ] && REFRESH=0
 
 
         if [ "x$DPF_ENABLE" == "x1" ]; then

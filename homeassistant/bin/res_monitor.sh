@@ -795,15 +795,15 @@ set_states() {
                     url=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e url | tr -d '"')
 #                    photos=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e url | tr -d '"')
 #                    [ -z "$photos" ] && photos="[]"
-                    isshuffle=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e shuffle | tr -d '"')
-                    [ -z "$isshuffle" ] && isshuffle=1
-                    isrefresh=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e refresh | tr -d '"')
-                    [ -z "$isrefresh" ] && isrefresh=1
+                    shuffle=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e shuffle | tr -d '"')
+                    [ -z "$shuffle" ] && shuffle=1
+                    refresh=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e refresh | tr -d '"')
+                    [ -z "$refresh" ] && refresh=1
 
                     interval=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e interval)
                     [ -z "$interval" ] && interval=$DPF_DEFAULT_INTERVAL
                     #msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$url\",\"photos\":\"$photos\",\"interval\":$interval}}"
-                    msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$url\",\"isrefresh\":\"$isrefresh\",\"isshuffle\":\"$isshuffle\",\"interval\":$interval}}"
+                    msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$url\",\"refresh\":\"$refresh\",\"shuffle\":\"$shuffle\",\"interval\":$interval}}"
                     mqtt_pub $topic "$msg"
                 else
                     msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\"}}"
