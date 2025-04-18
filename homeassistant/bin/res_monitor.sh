@@ -795,15 +795,15 @@ set_states() {
                     url=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e url | tr -d '"')
 #                    photos=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e url | tr -d '"')
 #                    [ -z "$photos" ] && photos="[]"
-                    shuffle=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e shuffle | tr -d '"')
+                    shuffle=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e shuffle)
                     [ -z "$shuffle" ] && shuffle=1
-                    refresh=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e refresh | tr -d '"')
+                    refresh=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e refresh)
                     [ -z "$refresh" ] && refresh=1
 
                     interval=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e interval)
                     [ -z "$interval" ] && interval=$DPF_DEFAULT_INTERVAL
                     #msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$url\",\"photos\":\"$photos\",\"interval\":$interval}}"
-                    msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$url\",\"refresh\":\"$refresh\",\"shuffle\":\"$shuffle\",\"interval\":$interval}}"
+                    msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$url\",\"refresh\":$refresh,\"shuffle\":$shuffle,\"interval\":$interval}}"
                     mqtt_pub $topic "$msg"
                 else
                     msg="{\"digital_frame\":{\"setframe\":\"$topic/setframe\"}}"

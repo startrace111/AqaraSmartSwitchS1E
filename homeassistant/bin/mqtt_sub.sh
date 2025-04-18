@@ -289,8 +289,8 @@ set_frame() {
         photos_url=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e url | tr -d '"')
         #photos=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e photos)
         interval=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e interval)
-        shuffle=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e shuffle | tr -d '"')
-        refresh=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e refresh | tr -d '"')
+        shuffle=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e shuffle)
+        refresh=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e refresh)
 
 
         topic="$HASS_PREFIX/switch/0x00${DID}/digital_frame"
@@ -304,12 +304,13 @@ set_frame() {
                 msg=ON
                 echo "{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"refresh\":$refresh,\"shuffle\":$shuffle}}" > $DPF_CONFIG
                 # call frame.sh
+                pkill -f "/data/bin/frame.sh"
                 /data/bin/frame.sh &
             else
                 info="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"return value\":\"Missing Photos url, or Photos info, or frame.sh!\"}}"
                 msg=OFF
                 enable=0
-                echo "{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"refresh\":$refresh,\"shuffle\":$shuffle}}" > $DPF_CONFIG
+                # echo "{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"refresh\":$refresh,\"shuffle\":$shuffle}}" > $DPF_CONFIG
             fi
         else
             info="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"refresh\":$refresh,\"shuffle\":$shuffle}}"
