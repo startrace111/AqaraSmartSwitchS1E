@@ -15,7 +15,6 @@ CURRENT_BG_PNG="time_6_6_digitalbackground_1.png"
 CURRENT_PICTURE_INDEX=1
 CURRENT_PICTURE=
 CURL=
-PICTURE_LIST=()
 SHUFFLE=0
 REFRESH=0
 
@@ -150,11 +149,11 @@ backup_png() {
 #}
 get_picture() {
     set -- $PICTURE_LIST
-    local arr=("$@")
-    local len=${#arr[@]}
+    local len=$#
 
     if [ "$CURRENT_PICTURE_INDEX" -gt "$len" ]; then
         load_picture_list  # 每轮播放完重新加载
+        set -- $PICTURE_LIST
     fi
 
     CURRENT_PICTURE=$(echo $PICTURE_LIST | cut -d ' ' -f $CURRENT_PICTURE_INDEX)

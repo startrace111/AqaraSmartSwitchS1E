@@ -287,14 +287,20 @@ set_frame() {
     if [ -f "$DPF_CONFIG" ]; then
         [ "x$msg" == "xON" ] && enable=1 || enable=0
         photos_url=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e url | tr -d '"')
-        photos=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e photos)
+        #photos=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e photos)
         interval=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e interval)
+        isshuffle=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e shuffle | tr -d '"')
+        isrefresh=$(cat $DPF_CONFIG | jshon -Q -e digital_frame -e refresh | tr -d '"')
+
+
         topic="$HASS_PREFIX/switch/0x00${DID}/digital_frame"
         [ -z "$interval" ] && interval=$DPF_DEFAULT_INTERVAL
-        [ -z "$photos" ] && photos="[]"
+        [ -z "$isrefresh" ] && isrefresh=1
+        [ -z "$isshuffle" ] && isshuffle=1
+        #[ -z "$photos" ] && photos="[]"
         if [ "x$enable" == "x1" ]; then
-            if [ -n "$photos_url" ] && [ -n "$photos" ] && [ -x "/data/bin/frame.sh" ]; then
-                info="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"photos\":$photos}}"
+            if [ -n "$photos_url" ] && [ -x "/data/bin/frame.sh" ]; then
+                info="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"isrefresh\":$isrefresh,\"isshuffle\":$isshuffle}}"
                 msg=ON
                 # call frame.sh
                 /data/bin/frame.sh &
@@ -304,7 +310,7 @@ set_frame() {
                 enable=0
             fi
         else
-            info="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"photos\":$photos}}"
+            info="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"isrefresh\":$isrefresh,\"isshuffle\":$isshuffle}}"
             msg=OFF
             killall -9 frame.sh
             enable=0
@@ -313,7 +319,7 @@ set_frame() {
         sleep .1
         mqtt_pub "$topic/state" "$msg"
         [ -z $photos ] && photos='[]'
-        echo "{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"photos\":$photos}}" > $DPF_CONFIG
+        echo "{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"enable\":$enable,\"url\":\"$photos_url\",\"interval\":$interval,\"isrefresh\":$isrefresh,\"isshuffle\":$isshuffle}}" > $DPF_CONFIG
     else
         info="{\"digital_frame\":{\"setframe\":\"$topic/setframe\",\"return value\":\"No $PDF_CONFIG\"}}"
         topic="$HASS_PREFIX/switch/0x00${DID}/digital_frame"
